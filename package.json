@@ -1,0 +1,20 @@
+{
+  "name": "twilightmode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "minify twilightMode.js --out-file twilightMode.min.js --mangle.keepClassName"
+  },
+  "keywords": [
+    "night mode",
+    "dark mode",
+    "low power mode"
+  ],
+  "author": "Sethu narayan Senthil",
+  "license": "ISC",
+  "dependencies": {
+    "babel-minify": "^0.5.0"
+  }
+}
