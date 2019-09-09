@@ -1,5 +1,6 @@
 let night, day, manualMode = false;
-function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSet, illuminanceTolerance) {
+//args.nightClass, args.uiTransSet, args.startTime, args.endTime, args.batteryLevelSet, args.illuminanceTolerance
+function twilightMode(arg) {
    //checks if the OS is enforcing dark or light mode (if API exists)
     const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
     const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
@@ -10,15 +11,15 @@ function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSe
     var uiTrans = () => { };
 
     //sets arguments not defined to default values
-    nightClass = typeof nightClass !== 'undefined' ? nightClass : 'night';
-    uiTransSet = typeof uiTransSet !== 'undefined' ? uiTransSet : 'false';
-    startTime = typeof startTime !== 'undefined' ? startTime : 21;
-    endTime = typeof endTime !== 'undefined' ? endTime : 4;
-    batteryLevelSet = typeof batteryLevelSet !== 'undefined' ? batteryLevelSet : 35;
-    illuminanceTolerance = typeof illuminanceTolerance !== 'undefined' ? illuminanceTolerance : 16.257;
+    args.nightClass = typeof args.nightClass !== 'undefined' ? args.nightClass : 'night';
+    args.uiTransSet = typeof args.uiTransSet !== 'undefined' ? args.uiTransSet : 'false';
+    args.startTime = typeof args.startTime !== 'undefined' ? args.startTime : 21;
+    args.endTime = typeof args.endTime !== 'undefined' ? args.endTime : 4;
+    args.batteryLevelSet = typeof args.batteryLevelSet !== 'undefined' ? args.batteryLevelSet : 35;
+    args.illuminanceTolerance = typeof args.illuminanceTolerance !== 'undefined' ? args.illuminanceTolerance : 16.257;
 
     //Smooth UI transition from dark to light mode
-    if(uiTransSet){
+    if(args.uiTransSet){
         let style = document.createElement('style');
         style.type = 'text/css';
         style.innerHTML =
@@ -40,7 +41,7 @@ function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSe
         //console.log('changed to night')
         if (!modeNight) {
           uiTrans()
-          document.body.classList.add(nightClass)
+          document.body.classList.add(args.nightClass)
           modeNight = true
         }
         manualMode = manualModee
@@ -49,7 +50,7 @@ function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSe
         //console.log('changed to day')
         if(true){
         uiTrans()
-        document.body.classList.remove(nightClass)
+        document.body.classList.remove(args.nightClass)
         modeNight = false
         }
         manualMode = manualModee
@@ -64,7 +65,7 @@ function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSe
           //console.log('No suppoert for color scheme or no pref. Set to ALS, Low Batt, and Clock')
           now = new Date();
           hour = now.getHours();
-          if ((hour <= endTime || hour >= startTime) && !manualMode) {
+          if ((hour <= args.endTime || hour >= args.startTime) && !manualMode) {
             setInterval(function(){
             night(false)}, 1000)
             override = true;
@@ -88,7 +89,7 @@ function twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSe
             if(batteryInWindow){
               navigator.getBattery().then(function(battery) {
                 let batteryLevel = battery.level * 100;
-                if(batteryLevel <= batteryLevelSet && !override){
+                if(batteryLevel <= args.batteryLevelSet && !override){
                  night(false);
                 }else{
                   if(!override){

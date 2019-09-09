@@ -3,9 +3,22 @@
 ## API
 Init: twilightMode()
 
-Optional Settings (if your setting up one of these values you will want to set up all of them)
+All settings are optional
 
-twilightMode(nightClass, uiTransSet, startTime, endTime, batteryLevelSet, illuminanceTolerance)
+```javascript
+//all of these or default settings (so if your going to use these exact same values don't pass in any params)
+let twilightSettings = {
+nightClass = "night",
+uiTransSet = false, //false means it uses the default smooth UI transition
+startTime = 21, //the start time for twilight
+endTime = 4, //the end time for twilight
+batteryLevelSet = 35, //the battery percent threshold in which twilight mode will launch
+illuminanceTolerance = 16.257 //the ambient light sensor value threshold you want twilight to launch
+}
+
+twilightMode(twilightSettings)
+```
+
 
 nightClass (String) - the css className of your dark/night mode
 
