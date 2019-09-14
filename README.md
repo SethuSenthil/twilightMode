@@ -1,5 +1,5 @@
 # Twilight Mode - lightweight & comprehensive JS library for darkmode
-# Check Back Later! This lib project is not ready yet!
+# Beta v0.3
 ## API
 Init: twilightMode()
 
@@ -31,3 +31,8 @@ endTime (Int) - the hour (24 hour time) in which you want darkmode to end
 batteryLevelSet (int) - the battery level threshold in which you want dark mode to start
 
 illuminanceTolerance (double/long) - the illuminance value threshold you want darkmode to evoke (we recommend you dont override this value and keep the default)
+
+# Development
+To compile the library your self:
+` npm i` - to instal the compiler dependencies
+`npm start` - to build the library

@@ -1,6 +1,6 @@
 let night, day, manualMode = false;
 //args.nightClass, args.uiTransSet, args.startTime, args.endTime, args.batteryLevelSet, args.illuminanceTolerance
-function twilightMode(arg) {
+function twilightMode(args) {
    //checks if the OS is enforcing dark or light mode (if API exists)
     const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
     const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
@@ -11,12 +11,16 @@ function twilightMode(arg) {
     var uiTrans = () => { };
 
     //sets arguments not defined to default values
-    args.nightClass = typeof args.nightClass !== 'undefined' ? args.nightClass : 'night';
-    args.uiTransSet = typeof args.uiTransSet !== 'undefined' ? args.uiTransSet : 'false';
-    args.startTime = typeof args.startTime !== 'undefined' ? args.startTime : 21;
-    args.endTime = typeof args.endTime !== 'undefined' ? args.endTime : 4;
-    args.batteryLevelSet = typeof args.batteryLevelSet !== 'undefined' ? args.batteryLevelSet : 35;
-    args.illuminanceTolerance = typeof args.illuminanceTolerance !== 'undefined' ? args.illuminanceTolerance : 16.257;
+    if(args === null || args === undefined) {
+      args = {
+        nightClass : 'night',
+        uiTransSet : 'false',
+        startTime : 21,
+        endTime : 4,
+        batteryLevelSet : 35,
+        illuminanceTolerance : 16.257
+      }
+     }
 
     //Smooth UI transition from dark to light mode
     if(args.uiTransSet){
@@ -59,10 +63,44 @@ function twilightMode(arg) {
         window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && activateDarkMode())
         window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && activateLightMode())
 
-        if(isDarkMode) activateDarkMode()
-        if(isLightMode) activateLightMode()
+        if(isDarkMode) night()
+        if(isLightMode) day()
         if(isNotSpecified || hasNoSupport) {
           //console.log('No suppoert for color scheme or no pref. Set to ALS, Low Batt, and Clock')
+
+          if ('AmbientLightSensor' in window) {
+            const sensor = new AmbientLightSensor();
+            sensor.onreading = () => {
+            //console.log('illuminance value :', sensor.illuminance);
+            if(!manualMode){
+              if (sensor.illuminance <= 16.257 && !override) {
+                night(false);
+              } else {
+                if(batteryInWindow){
+                  navigator.getBattery().then(function(battery) {
+                    let batteryLevel = battery.level * 100;
+                    if(batteryLevel <= args.batteryLevelSet && !override){
+                     night(false);
+                    }else{
+                      if(!override){
+                        day(false);
+                      }
+                    }
+                });
+                }else{
+                  if(!override){
+                  day(false)
+                  }
+                }
+              }
+            };
+          };
+            sensor.onerror = (event) => {
+              //console.log(event.error.name, event.error.message);
+            };
+            sensor.start();
+          }
+
           now = new Date();
           hour = now.getHours();
           if ((hour <= args.endTime || hour >= args.startTime) && !manualMode) {
@@ -78,38 +116,6 @@ function twilightMode(arg) {
           }
         }
     }
-    if ('AmbientLightSensor' in window) {
-        const sensor = new AmbientLightSensor();
-        sensor.onreading = () => {
-        //console.log('illuminance value :', sensor.illuminance);
-        if(!manualMode){
-          if (sensor.illuminance <= 16.257 && !override) {
-            night(false);
-          } else {
-            if(batteryInWindow){
-              navigator.getBattery().then(function(battery) {
-                let batteryLevel = battery.level * 100;
-                if(batteryLevel <= args.batteryLevelSet && !override){
-                 night(false);
-                }else{
-                  if(!override){
-                    day(false);
-                  }
-                }
-            });
-            }else{
-              if(!override){
-              day(false)
-              }
-            }
-          }
-        };
-      };
-        sensor.onerror = (event) => {
-          //console.log(event.error.name, event.error.message);
-        };
-        sensor.start();
-      }
       setColorScheme()
       setInterval(function(){
       setColorScheme()}, 120000)
