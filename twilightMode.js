@@ -34,14 +34,14 @@ function twilightMode(args) {
         }
         `;
         uiTrans = () => {
-         document.getElementsByTagName('head')[0].appendChild(style);
-        body.classList.add('transition');
-        window.setTimeout(() => {
-          body.classList.remove('transition')
-        }, 1000)
+           document.getElementsByTagName('head')[0].appendChild(style);
+           body.classList.add('transition');
+           window.setTimeout(() => {
+             body.classList.remove('transition')
+           }, 1000)
+        }
     }
-    }
-     night = (manualModee) =>{
+    night = (manualModee) =>{
         //console.log('changed to night')
         if (!modeNight) {
           uiTrans()
@@ -53,9 +53,9 @@ function twilightMode(args) {
      day = (manualModee) =>{
         //console.log('changed to day')
         if(true){
-        uiTrans()
-        document.body.classList.remove(args.nightClass)
-        modeNight = false
+           uiTrans()
+           document.body.classList.remove(args.nightClass)
+           modeNight = false
         }
         manualMode = manualModee
     }
@@ -89,34 +89,34 @@ function twilightMode(args) {
                 });
                 }else{
                   if(!override){
-                  day(false)
+                     day(false)
                   }
                 }
               }
             };
           };
-            sensor.onerror = (event) => {
-              //console.log(event.error.name, event.error.message);
-            };
-            sensor.start();
-          }
+          sensor.onerror = (event) => {
+            //console.log(event.error.name, event.error.message);
+          };
+          sensor.start();
+       }
 
-          now = new Date();
-          hour = now.getHours();
-          if ((hour <= args.endTime || hour >= args.startTime) && !manualMode) {
-            setInterval(function(){
-            night(false)}, 1000)
-            override = true;
-          }else{
-            if(!modeNight){
-              modeNight = true;
-              override = false;
-              day(false);
-            }
-          }
-        }
-    }
-      setColorScheme()
-      setInterval(function(){
-      setColorScheme()}, 120000)
+       now = new Date();
+       hour = now.getHours();
+       if ((hour <= args.endTime || hour >= args.startTime) && !manualMode) {
+         setInterval(function(){
+         night(false)}, 1000)
+         override = true;
+       }else{
+         if(!modeNight){
+           modeNight = true;
+           override = false;
+           day(false);
+         }
+      }
+   }
+}
+setColorScheme()
+setInterval(function(){
+   setColorScheme()}, 120000)
 }
